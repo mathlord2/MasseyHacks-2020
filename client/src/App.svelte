@@ -1,30 +1,37 @@
 <script>
-	export let name;
+	import Home from "./components/Home.svelte";
+	import History from "./components/History.svelte";
+	import Auth from "./components/Auth.svelte";
+	import { page, loggedIn, currentUser } from "./stores.js";
+
+	let currentPage;
+	let logged;
+	let user;
+
+	const unsubscribe1 = page.subscribe(val => {
+		currentPage = val;
+	});
+
+	const unsubsribe2 = loggedIn.subscribe(val => {
+		logged = val;
+	});
+
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	{#if logged}
+		{#if currentPage == "Home"}
+			<Home></Home>
+			{:else}
+			<History></History>
+		{/if}
+	{:else}
+		<Auth></Auth>
+	{/if}
 </main>
 
 <style>
 	main {
 		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
 	}
 </style>

@@ -4,11 +4,16 @@ Project for MasseyHacks 2020.
 
 ## Get started
 
-Go into the client folder and install the dependencies...
+Go to the client folder and install the dependencies...
 
 ```bash
 cd client
 npm install
+```
+
+...then create your build files:
+```bash
+npm run build
 ```
 
 ...then start [Rollup](https://rollupjs.org):
