@@ -1,14 +1,14 @@
 from parselmouth.praat import run_file
+from parselmouth import Data
 from scipy.stats import binom
 from scipy.stats import ks_2samp
 from scipy.stats import ttest_ind
 import numpy as np
 import os
 
-# os.getcwd is acting weird
-dir = os.path.join(os.getcwd(), "backend")
+dir = os.getcwd()
 
-print(dir)
+# print(dir) should print the directory of "backend"
 
 file_praat = os.path.join(dir, "praatfile.praat")
 
@@ -33,9 +33,9 @@ def analyze_speech(wav_filename):
             "f0_max": float(info[11]), # In Hz, global maximum of fundamental frequency distribution
             "f0_first_quartile": float(info[12]), # In Hz, global first quartile of fundamental frequency distribution
             "f0_third_quartile": float(info[13]), # In Hz, global third quartile of fundamental frequency distribution
-            # "pronounciation_score": np.mean(np.array(binom.rvs(n=10,p=float(info[14]),size=10000))) # pronounciation posterior probability percent (idk)
+            "pronounciation_score": 10*np.mean(np.array(binom.rvs(n=10,p=float(info[14]),size=10000))) # pronounciation posterior probability percent (idk)
         }
     except:
         print ("File not found")
 
-print(analyze_speech("file.wav"))
+print(analyze_speech("recordings/recording-1.wav"))
