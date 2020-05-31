@@ -70,6 +70,7 @@
                 if (recorder.state == 'inactive') {
                     // convert stream data chunks to a 'webm' audio format as a blob
                     const blob = new Blob(chunks, { type: 'audio/wav' });
+                    console.log(blob);
                     // convert blob to URL so it can be assigned to a audio src attribute
                     createAudioElement(URL.createObjectURL(blob));
                 }
@@ -119,7 +120,7 @@
 
             if (question == questions[0]) {
                 var Q1 = userDoc.Question1;
-                console.log(Q1);
+                //console.log(Q1);
                 var dateArr = Q1.dates;
                 var articulations = Q1.articulationRate;
                 var durations = Q1.duration;
@@ -141,7 +142,7 @@
 
             } else if (question == questions[1]) {
                 var Q2 = userDoc.Question2;
-                console.log(Q2);
+                //console.log(Q2);
                 var dateArr = Q2.dates;
                 var articulations = Q2.articulationRate;
                 var durations = Q2.duration;
@@ -162,7 +163,7 @@
                 });
             } else if (question == questions[2]) {
                 var Q3 = userDoc.Question3;
-                console.log(Q3);
+                //console.log(Q3);
                 var dateArr = Q3.dates;
                 var articulations = Q3.articulationRate;
                 var durations = Q3.duration;
@@ -234,7 +235,7 @@
             <form action="/upload_file" method="POST" enctype="multipart/form-data">
                 <input type="file" id="audioFile" class="inputFile" name="audioFile" accept=".wav">
 	            <label for="audioFile">Upload Audio <i class="fa fa-upload"></i></label>
-                <button type="submit">Submit File</button>
+                <button type="button">Submit File</button>
             </form>
         </div>
 
@@ -314,7 +315,7 @@
     }
     
 	.inputFile + label {
-		background-color: #5d95c4;
+		background-color: #a0d2fa;
         outline: none;
         border-radius: 10px;
 		display: inline-block;

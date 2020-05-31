@@ -3,6 +3,18 @@
     import { loggedIn, currentUser, userEmail, data } from "../stores.js";
 
     onMount(() => {
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                console.log("Signed in");
+                loggedIn.set(true);
+                currentUser.set(user);
+                userEmail.set(user.email);
+                getData(user.email);
+            } else {
+                console.log("Signed out");
+            }
+        });
+
         var uiConfig = {
             signInOptions: [
                 // Leave the lines as is for the providers you want to offer your users.
