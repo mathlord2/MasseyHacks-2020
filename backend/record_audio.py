@@ -5,8 +5,9 @@ CHANNELS = 2
 RATE = 44100
 CHUNK = 1024
 RECORD_SECONDS = 5
-WAVE_OUTPUT_FILENAME = "file.wav"
- 
+
+# this module is for quickly creating audio files to test with
+
 audio = pyaudio.PyAudio()
 
 def record_test(out_filename):
@@ -29,11 +30,11 @@ def record_test(out_filename):
     stream.close()
     audio.terminate()
     
-    waveFile = wave.open(os.path.join("recordings", out_filename), 'wb')
+    waveFile = wave.open(out_filename, 'wb')
     waveFile.setnchannels(CHANNELS)
     waveFile.setsampwidth(audio.get_sample_size(FORMAT))
     waveFile.setframerate(RATE)
     waveFile.writeframes(b''.join(frames))
     waveFile.close()
 
-record_test("recording-1.wav")
+# record_test(os.path.join("backend", "recordings", "recording-1.wav"))

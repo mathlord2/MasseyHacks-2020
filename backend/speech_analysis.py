@@ -1,12 +1,11 @@
 from parselmouth.praat import run_file
-from parselmouth import Data
 from scipy.stats import binom
 from scipy.stats import ks_2samp
 from scipy.stats import ttest_ind
 import numpy as np
 import os
 
-dir = os.getcwd()
+dir = os.path.join(os.getcwd(), "backend")
 
 # print(dir) should print the directory of "backend"
 
