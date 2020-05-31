@@ -26,8 +26,7 @@ def analyze_from_file():
             print(audio.filename)
 
             filename = "recordings/{}".format(secure_filename(audio.filename))
-            print("Hi")
-            audio.save(os.path.join("backend", filename))
+            audio.save(filename)
 
             #filename = request.get_json(force=True).get("filename")
             #print(filename)
@@ -67,8 +66,7 @@ def analyze_from_url():
 
         
         filename = "recordings/{}".format(secure_filename(audio.filename))
-        audio.save(os.path.join("backend", filename))
-        print("Hi")
+        audio.save(filename)
 
         #filename = request.get_json(force=True).get("filename")
         #print(filename)
