@@ -33,6 +33,9 @@
 				//filename = e.target.files[0].name;
             //}
         //});
+        window.$("#upload_file").on("submit", function(e) {
+            e.preventDefault();
+        });
     });
 
     // appends an audio element to playback and download recording
@@ -235,7 +238,7 @@
             <form action="/upload_file" method="POST" enctype="multipart/form-data">
                 <input type="file" id="audioFile" class="inputFile" name="audioFile" accept=".wav">
 	            <label for="audioFile">Upload Audio <i class="fa fa-upload"></i></label>
-                <button type="button">Submit File</button>
+                <button type="submit">Submit File</button>
             </form>
         </div>
 
