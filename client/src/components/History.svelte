@@ -171,8 +171,10 @@
         var artTxt = document.createTextNode(String(question.articulationRate[i]));
         if (i != 0 && hasBetterArticulationRate(previousArticulationRate, question.articulationRate[i])) { //Algorithm for determining better articulation rate
             art.style.backgroundColor = "green";
+            art.style.color = "white";
         } else if (i != 0 && hasBetterArticulationRate(previousArticulationRate, question.articulationRate[i]) == false) {
             art.style.backgroundColor = "red";
+            art.style.color = "white";
         }
 
         previousArticulationRate = question.articulationRate[i];
@@ -190,8 +192,10 @@
         var pronunTxt = document.createTextNode(String(question.pronunciationScore[i]));
         if (i != 0 && question.pronunciationScore[i] > previousPronunciationScore) { //Comparing pronunciation scores
             pronun.style.backgroundColor = "green";
+            pronun.style.color = "white";
         } else if (i != 0 && question.pronunciationScore[i] < previousPronunciationScore) {
             pronun.style.backgroundColor = "red";
+            pronun.style.color = "white";
         }
 
         previousPronunciationScore = question.pronunciationScore[i];
@@ -215,7 +219,7 @@
         //Articulation Rate Heading
         var artHeading = document.createElement("th");
         artHeading.style.padding = "20px";
-        var artText = document.createTextNode("Articulation Rate (words/minute)");
+        var artText = document.createTextNode("Articulation Rate (syllables/second)");
         artHeading.appendChild(artText);
 
         //Duration Heading
@@ -239,9 +243,9 @@
     }
 
     function hasBetterArticulationRate(previous, current) {
-        //Good articulation rate is at 140 wpm - closer to 140 = better
-        var art1 = Math.abs(previous-140);
-        var art2 = Math.abs(current-140);
+        //Good articulation rate is at 4 sps - closer to 4 = better
+        var art1 = Math.abs(previous-4);
+        var art2 = Math.abs(current-4);
 
         if (art2 < art1) {
             return true;

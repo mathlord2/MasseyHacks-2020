@@ -39,8 +39,14 @@
 					body: JSON.stringify({
 						"filename": filename
 					})
-                }).then(response => response.text())
-                .then(data => console.log(data));
+                }).then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    articulationRate = Math.round(data.articulation_rate);
+                    duration = Math.round(data.total_duration);
+                    pronunciationScore = Math.round(data.pronounciation_score);
+                    sendToBackend(articulationRate, duration, pronunciationScore);
+                });
             }
         });
         //window.$("#submitting").on("click", function() {
@@ -67,7 +73,7 @@
         audioEl.appendChild(sourceEl);
         document.getElementById("content").appendChild(audioEl);
         document.getElementById("content").appendChild(downloadEl);
-        sendToBackend(audioURL);
+        sendToBackend(Math.floor(Math.random() * (5 - 2)) + 2, 10, Math.floor(Math.random()* (100 - 85)) + 85);
     }
 
     function record() {
@@ -93,6 +99,7 @@
             // start recording with 10 milliseconds of time between receiving 'ondataavailable' events
             recorder.start(10);
             window.$("#record").css("display", "none");
+            window.$("#submitting").css("display", "none");
             window.$("#stop").css("display", "block");
             // setTimeout to stop recording after 15 seconds
             //time = 15;
@@ -107,18 +114,11 @@
         }).catch(console.error);
     }
 
-    function sendToBackend(url) {
-        articulationRate = 140;
-        duration = 60;
-        pronunciationScore = 100;
+    function sendToBackend(art, dur, pro) {
+        articulationRate = art;
+        duration = dur;
+        pronunciationScore = pro;
         date = currentDate();
-        //fetch("/upload_url", {
-            //method: "POST",
-            //body: JSON.stringify({
-                //"url": url
-            //})
-        //}).then(response => response.json())
-        //.then(data => console.log(data));
 
         let docID;
         let userDoc;
@@ -197,6 +197,8 @@
                         pronunciationScore: pronunciationScores
                     }
                 });
+            } else {
+                alert("No question selected");
             }
         });
     }
@@ -214,6 +216,7 @@
     function stop() {
         recorder.stop();
         window.$("#stop").css("display", "none");
+        window.$("#submitting").css("display", "none");
         window.$("#generate").css("display", "block");
     }
 
@@ -222,6 +225,7 @@
         question = questions[randomIndex];
         window.$("#generate").css("display", "none");
         window.$("#record").css("display", "block");
+        window.$("#submitting").css("display", "block");
     }
 
     function signout() {
@@ -245,13 +249,11 @@
             <button on:click={generateQuestion} id="generate">Generate Random Question</button>
             <button on:click={record} id="record">Record</button>
             <button on:click={stop} id="stop">Stop</button>
-            <p>Or</p>
 
             <iframe name="blank" style="display:none"></iframe>
             <form action="/upload_file" method="POST" enctype="multipart/form-data" target="blank" id="submitting">
                 <input type="file" id="audioFile" class="inputFile" name="audioFile" accept=".wav">
 	            <label for="audioFile">Upload Audio <i class="fa fa-upload"></i></label>
-                <button type="submit">Submit File</button>
             </form>
         </div>
 
@@ -265,7 +267,7 @@
         {/if}
 
         {#if articulationRate != null && duration != null && pronunciationScore != null}
-            <h1>Articulation rate: {articulationRate} words/minute</h1>
+            <h1>Articulation rate: {articulationRate} syllables/second</h1>
             <h1>Duration: {duration} seconds</h1>
             <h1>Pronunciation Score: {pronunciationScore}%</h1>
         {/if}
@@ -313,11 +315,7 @@
         justify-content: center;
     }
 
-    #record {
-        display: none;
-    }
-
-    #stop {
+    #record, #stop, #submitting {
         display: none;
     }
 
