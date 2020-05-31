@@ -6,12 +6,12 @@ import numpy as np
 import pathlib, os
 
 # dir = pathlib.Path(__file__).parent.absolute() not a string, doesn't work
-dir = os.getcwd()
+dir = os.path.dirname(__file__)
 
 # print(dir) should print the directory of "backend"
 
-#For Borna: file_praat = os.path.join(dir, "backend", "praatfile.praat")
-file_praat = os.path.join(dir, "praatfile.praat")
+file_praat = os.path.join(dir, "praatfile.praat") # For Borna
+# file_praat = os.path.join(dir, "praatfile.praat")
 
 def analyze_speech(wav_filename):
     sound_path = os.path.join(dir, wav_filename)

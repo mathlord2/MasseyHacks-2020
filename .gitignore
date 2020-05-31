@@ -1,5 +1,4 @@
 client/node_modules/
 client/public/build/
-
 backend/__pycache__
 .DS_Store

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, render_template, send_from_directory
 from werkzeug.utils import secure_filename
 from speech_analysis import analyze_speech
-import requests
+import requests, os
 app = Flask(__name__)
 
 @app.route("/")
@@ -27,7 +27,7 @@ def analyze_from_file():
 
             filename = "recordings/{}".format(secure_filename(audio.filename))
             print("Hi")
-            audio.save(filename)
+            audio.save(os.path.join("backend", filename))
 
             #filename = request.get_json(force=True).get("filename")
             #print(filename)
@@ -63,8 +63,11 @@ def analyze_from_url():
         audio = request.files.get("file")
         print(audio.filename)
 
+        print("\n\n", audio, "\n\n")
+
+        
         filename = "recordings/{}".format(secure_filename(audio.filename))
-        audio.save(filename)
+        audio.save(os.path.join("backend", filename))
         print("Hi")
 
         #filename = request.get_json(force=True).get("filename")

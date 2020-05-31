@@ -37,4 +37,4 @@ def record_test(out_filename):
     waveFile.writeframes(b''.join(frames))
     waveFile.close()
 
-# record_test(os.path.join("backend", "recordings", "recording-1.wav"))
+record_test(os.path.join("backend", "recordings", "recording-1.wav"))
