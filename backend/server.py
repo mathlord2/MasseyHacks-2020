@@ -22,16 +22,16 @@ def analyze_from_file():
 
     if request.method == "POST":
         #if request.files:
-            #audio = request.files["audioFile"]
+            audio = request.files.get("file")
             #print(audio.filename)
 
-            #filename = "{}".format(secure_filename(audio.filename))
-            #audio.save(filename)
+            filename = "recordings/{}".format(secure_filename(audio.filename))
+            audio.save(filename)
 
-            filename = request.get_json(force=True).get("filename")
-            print(filename)
+            #filename = request.get_json(force=True).get("filename")
+            #print(filename)
 
-            filename = "recordings/{}".format(secure_filename(filename))
+            #filename = "recordings/{}".format(secure_filename(filename))
 
             speech_info = analyze_speech(filename)
             print(speech_info)

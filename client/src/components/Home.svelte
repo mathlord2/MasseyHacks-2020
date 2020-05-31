@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { page, loggedIn, currentUser, userEmail, questions } from "../stores.js";
 
-    let filename;
+    let file;
     let recorder;
     let question;
     let time;
@@ -32,13 +32,14 @@
 			reader.readAsDataURL(file);
             reader.onload = function() {
                 audioURL = reader.result;
-                filename = e.target.files[0].name;
+                file = e.target.files[0];
+                let form = new FormData();
+                form.append("file", file, file.name);
+                console.log(form.entries)
                 
                 fetch("/upload_file", {
 					method: "POST",
-					body: JSON.stringify({
-						"filename": filename
-					})
+					body: form
                 }).then(response => response.json())
                 .then(data => {
                     console.log(data);
@@ -49,11 +50,6 @@
                 });
             }
         });
-        //window.$("#submitting").on("click", function() {
-            //setTimeout(fetch("/upload_file")
-            //.then(response => response.json())
-            //.then(data => console.log(data)), 10000);
-        //});
     });
 
     // appends an audio element to playback and download recording
