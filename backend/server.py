@@ -23,9 +23,10 @@ def analyze_from_file():
     if request.method == "POST":
         #if request.files:
             audio = request.files.get("file")
-            #print(audio.filename)
+            print(audio.filename)
 
             filename = "recordings/{}".format(secure_filename(audio.filename))
+            print("Hi")
             audio.save(filename)
 
             #filename = request.get_json(force=True).get("filename")
@@ -60,10 +61,11 @@ def analyze_from_url():
 
         #print(response)
         audio = request.files.get("file")
-        #print(audio.filename)
+        print(audio.filename)
 
         filename = "recordings/{}".format(secure_filename(audio.filename))
         audio.save(filename)
+        print("Hi")
 
         #filename = request.get_json(force=True).get("filename")
         #print(filename)

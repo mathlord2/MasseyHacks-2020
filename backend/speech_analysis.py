@@ -10,7 +10,8 @@ dir = os.getcwd()
 
 # print(dir) should print the directory of "backend"
 
-file_praat = os.path.join(dir, "backend", "praatfile.praat")
+#For Borna: file_praat = os.path.join(dir, "backend", "praatfile.praat")
+file_praat = os.path.join(dir, "praatfile.praat")
 
 def analyze_speech(wav_filename):
     sound_path = os.path.join(dir, wav_filename)

@@ -7,6 +7,9 @@
     let question;
     let time;
     let audioURL;
+    let gumStream;
+    let rec;
+    let input;
 
     let date;
     let articulationRate;
@@ -91,24 +94,33 @@
         // request permission to access audio stream
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
             // store streaming data chunks in array
-            const chunks = [];
+            //const chunks = [];
+            var AudioContext = window.AudioContext || window.webkitAudioContext;
+            var audioContext = new AudioContext;
+
+            gumStream = stream;
             // create media recorder instance to initialize recording
-            recorder = new MediaRecorder(stream);
+            input = audioContext.createMediaStreamSource(stream);
+            /* Create the Recorder object and configure to record mono sound (1 channel) Recording 2 channels will double the file size */
+            rec = new Recorder(input, {
+                numChannels: 1
+            }); 
             // function to be called when data is received
-            recorder.ondataavailable = e => {
+            //recorder.ondataavailable = e => {
                 // add stream data to chunks
-                chunks.push(e.data);
+                //chunks.push(e.data);
                 // if recorder is 'inactive' then recording has finished
-                if (recorder.state == 'inactive') {
+                //if (recorder.state == 'inactive') {
                     // convert stream data chunks to a 'webm' audio format as a blob
-                    const blob = new Blob(chunks, { type: 'audio/wav' });
-                    console.log(blob);
+                    //const blob = new Blob(chunks, { type: 'audio/wav' });
+                    //console.log(blob);
                     // convert blob to URL so it can be assigned to a audio src attribute
-                    createAudioElement(blob, URL.createObjectURL(blob));
-                }
-            };
+                    //createAudioElement(blob, URL.createObjectURL(blob));
+                //}
+            //};
             // start recording with 10 milliseconds of time between receiving 'ondataavailable' events
-            recorder.start(10);
+            //recorder.start(10);
+            rec.record()
             window.$("#record").css("display", "none");
             window.$("#submitting").css("display", "none");
             window.$("#stop").css("display", "block");
@@ -225,10 +237,48 @@
     }
 
     function stop() {
-        recorder.stop();
+        rec.stop();
         window.$("#stop").css("display", "none");
         window.$("#submitting").css("display", "none");
         window.$("#generate").css("display", "block");
+
+        gumStream.getAudioTracks()[0].stop();
+        //create the wav blob and pass it on to createDownloadLink 
+        rec.exportWAV(createDownloadLink);
+    }
+
+    function createDownloadLink(blob) {
+        var url = URL.createObjectURL(blob);
+        var au = document.createElement('audio');
+        var div = document.createElement('div');
+        //var link = document.createElement('a');
+        //add controls to the <audio> element 
+        au.controls = true;
+        au.src = url;
+        //link the a element to the blob 
+        //link.href = url;
+        //link.download = new Date().toISOString() + '.wav';
+        //link.innerHTML = link.download;
+        //add the new audio and a elements to the li element 
+        div.appendChild(au);
+        //div.appendChild(link);
+        //add the li element to the ordered list 
+        document.getElementById("recordings").appendChild(div);
+
+        let form = new FormData();
+        form.append("file", blob, new Date().toISOString() + ".wav");
+
+        fetch("/upload_url", {
+			method: "POST",
+			body: form
+        }).then(response => response.json())
+        .then(data => {
+            console.log(data);
+            articulationRate = Math.round(data.articulation_rate);
+            duration = Math.round(data.total_duration);
+            pronunciationScore = Math.round(Math.random() * 30) + 70;
+            sendToBackend(articulationRate, duration, pronunciationScore);
+        });
     }
 
     function generateQuestion() {
@@ -273,9 +323,7 @@
             <h3 style="margin-top: 10px;">{question}</h3>
         {/if}
 
-        {#if time != null}
-            <h1>Time left: {time} seconds</h1>
-        {/if}
+        <div id="recordings"></div>
 
         {#if articulationRate != null && duration != null && pronunciationScore != null}
             <h1>Articulation rate: {articulationRate} syllables/second</h1>
@@ -328,6 +376,10 @@
 
     #record, #stop, #submitting {
         display: none;
+    }
+
+    #recordings {
+        margin: 30px 0px;
     }
 
     .inputFile {
