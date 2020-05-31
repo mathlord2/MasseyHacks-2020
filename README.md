@@ -1,6 +1,4 @@
-Project for MasseyHacks 2020.
-
----
+CogniTalk - Helping people practice, maintain, and improve their communication skills.
 
 ## Get started
 
@@ -16,16 +14,25 @@ npm install
 npm run build
 ```
 
-...then start [Rollup](https://rollupjs.org):
+In a separate CMD/PowerShell, navigate to the backend folder and install the dependency for the analysis library:
 
 ```bash
-npm run dev
+cd backend
+pip install praat-parselmouth
 ```
 
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+...then run the server:
+```bash
+python server.py
+```
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+Navigate to [localhost:5000](http://localhost:5000). You should see your app running.
 
+To load changes in the src files, you must do a full-refresh (Ctrl-F5) of the entire page.
+
+---
+
+The following information below is about Svelte only and is not required for running the project.
 
 ## Building and running in production mode
 
