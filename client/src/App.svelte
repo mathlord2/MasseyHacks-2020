@@ -2,7 +2,7 @@
 	import Home from "./components/Home.svelte";
 	import History from "./components/History.svelte";
 	import Auth from "./components/Auth.svelte";
-	import { page, loggedIn, currentUser } from "./stores.js";
+	import { page, loggedIn, currentUser, userEmail } from "./stores.js";
 
 	let currentPage;
 	let logged;

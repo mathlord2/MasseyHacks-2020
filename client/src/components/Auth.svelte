@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import { loggedIn, currentUser, userEmail } from "../stores.js";
+    import { loggedIn, currentUser, userEmail, data } from "../stores.js";
 
     onMount(() => {
         var uiConfig = {
@@ -18,7 +18,12 @@
                     loggedIn.set(true);
                     currentUser.set(user);
                     userEmail.set(user.email);
-                    //getUserData();
+                    if (authResult.additionalUserInfo.isNewUser) {
+                        console.log("New user");
+                        createNewObject(user.email);
+                    } else {
+                        getData(user.email);
+                    }
                     return true;
                 },
                 signInFailure: function(error) {
@@ -37,12 +42,50 @@
         // The start method will wait until the DOM is loaded.
         ui.start('#firebaseui-auth-container', uiConfig);
     });
+
+    function createNewObject(email) {
+        const userData = {
+            userEmail: email,
+            Question1: {
+                articulationRate: [],
+                dates: [],
+                duration: [],
+                pronunciationScore: []
+            },
+            Question2: {
+                articulationRate: [],
+                dates: [],
+                duration: [],
+                pronunciationScore: []
+            },
+            Question3: {
+                articulationRate: [],
+                dates: [],
+                duration: [],
+                pronunciationScore: []
+            }
+        }
+        db.collection("users").add(userData).catch(function(error) {
+            console.error("Error adding document: ", error);
+        });
+        data.set(userData);
+    }
+
+    function getData(email) {
+        db.collection("users").get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                if (email == doc.data().userEmail) {
+                    data.set(doc.data());
+                }
+            });
+        });
+    }
 </script>
 
 <div id="firebaseui-auth-container"></div>
 
 <style>
-    #firebaseio-auth-container {
+    #firebaseui-auth-container {
         margin-top: 10%;
     }
 </style>

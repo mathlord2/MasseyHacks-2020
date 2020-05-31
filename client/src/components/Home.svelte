@@ -1,16 +1,38 @@
 <script>
     import { onMount } from "svelte";
-    import { page, loggedIn, currentUser, questions } from "../stores.js";
+    import { page, loggedIn, currentUser, userEmail, questions } from "../stores.js";
 
     let recorder;
     let question;
     let time;
     let audioURL;
 
+    let date;
+    let articulationRate;
+    let duration;
+    let pronunciationScore;
+
+    let email;
+
+    const unsubscribe = userEmail.subscribe(val => {
+        email = val;
+    });
+
     onMount(() => {
         window.$("#history").on("click", function() {
             page.set("History");
         });
+
+        window.$("#signout").on("click", signout);
+        //window.$('.inputFile').change(function(e){
+			//var reader = new FileReader();
+			//let file = window.$('.inputFile').prop('files')[0];
+			//reader.readAsDataURL(file);
+            //reader.onload = function() {
+                //audioURL = reader.result;
+				//filename = e.target.files[0].name;
+            //}
+        //});
     });
 
     // appends an audio element to playback and download recording
@@ -30,6 +52,7 @@
         audioEl.appendChild(sourceEl);
         document.getElementById("content").appendChild(audioEl);
         document.getElementById("content").appendChild(downloadEl);
+        sendToBackend(audioURL);
     }
 
     function record() {
@@ -68,6 +91,110 @@
         }).catch(console.error);
     }
 
+    function sendToBackend(url) {
+        articulationRate = 140;
+        duration = 60;
+        pronunciationScore = 100;
+        date = currentDate();
+        //fetch("/upload_url", {
+            //method: "POST",
+            //body: JSON.stringify({
+                //"url": url
+            //})
+        //}).then(response => response.json())
+        //.then(data => console.log(data));
+
+        let docID;
+        let userDoc;
+
+        db.collection("users").get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                if (email == doc.data().userEmail) {
+                    docID = doc.id;
+                    userDoc = doc.data();
+                }
+            });
+        }).then(function() {
+            var d = db.collection("users").doc(docID);
+
+            if (question == questions[0]) {
+                var Q1 = userDoc.Question1;
+                console.log(Q1);
+                var dateArr = Q1.dates;
+                var articulations = Q1.articulationRate;
+                var durations = Q1.duration;
+                var pronunciationScores = Q1.pronunciationScore;
+
+                dateArr.push(date);
+                articulations.push(articulationRate);
+                durations.push(duration);
+                pronunciationScores.push(pronunciationScore);
+
+                d.update({
+                    Question1: {
+                        dates: dateArr,
+                        articulationRate: articulations,
+                        duration: durations,
+                        pronunciationScore: pronunciationScores
+                    }
+                });
+
+            } else if (question == questions[1]) {
+                var Q2 = userDoc.Question2;
+                console.log(Q2);
+                var dateArr = Q2.dates;
+                var articulations = Q2.articulationRate;
+                var durations = Q2.duration;
+                var pronunciationScores = Q2.pronunciationScore;
+
+                dateArr.push(date);
+                articulations.push(articulationRate);
+                durations.push(duration);
+                pronunciationScores.push(pronunciationScore);
+
+                d.update({
+                    Question2: {
+                        dates: dateArr,
+                        articulationRate: articulations,
+                        duration: durations,
+                        pronunciationScore: pronunciationScores
+                    }
+                });
+            } else if (question == questions[2]) {
+                var Q3 = userDoc.Question3;
+                console.log(Q3);
+                var dateArr = Q3.dates;
+                var articulations = Q3.articulationRate;
+                var durations = Q3.duration;
+                var pronunciationScores = Q3.pronunciationScore;
+
+                dateArr.push(date);
+                articulations.push(articulationRate);
+                durations.push(duration);
+                pronunciationScores.push(pronunciationScore);
+
+                d.update({
+                    Question3: {
+                        dates: dateArr,
+                        articulationRate: articulations,
+                        duration: durations,
+                        pronunciationScore: pronunciationScores
+                    }
+                });
+            }
+        });
+    }
+
+    function currentDate() {
+        var d = new Date();
+        var months = ["January", "Februrary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var month = months[d.getMonth()];
+        var date = d.getDate();
+        var year = d.getFullYear();
+
+        return month + " " + date + ", " + year;
+    }
+
     function stop() {
         recorder.stop();
         window.$("#stop").css("display", "none");
@@ -96,23 +223,34 @@
         <div id="history">History</div>
         <div id="signout">Sign Out</div>
     </nav>
+
     <div id="content">
         <div id="buttons">
             <button on:click={generateQuestion} id="generate">Generate Random Question</button>
             <button on:click={record} id="record">Record</button>
             <button on:click={stop} id="stop">Stop</button>
             <p>Or</p>
-            <form>
-                <input type="file" id="audioFile" class="inputFile" name="audioFile" accept=".mp4, .webm">
-	            <label for="audioFile">Upload audio <i class="fa fa-upload"></i></label>
+
+            <form action="/upload_file" method="POST" enctype="multipart/form-data">
+                <input type="file" id="audioFile" class="inputFile" name="audioFile" accept=".wav">
+	            <label for="audioFile">Upload Audio <i class="fa fa-upload"></i></label>
+                <button type="submit">Submit File</button>
             </form>
         </div>
+
         {#if question != null}
-            <h1>Answer the following question in 15 seconds:</h1>
+            <h1>Answer the following question:</h1>
             <h3 style="margin-top: 10px;">{question}</h3>
         {/if}
+
         {#if time != null}
             <h1>Time left: {time} seconds</h1>
+        {/if}
+
+        {#if articulationRate != null && duration != null && pronunciationScore != null}
+            <h1>Articulation rate: {articulationRate} words/minute</h1>
+            <h1>Duration: {duration} seconds</h1>
+            <h1>Pronunciation Score: {pronunciationScore}%</h1>
         {/if}
     </div>
 </div>
