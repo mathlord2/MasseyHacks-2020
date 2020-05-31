@@ -54,11 +54,27 @@ def analyze_from_url():
         # somehow get the url that was sent...
         # url = ...
         
-        url = request.data.decode("utf-8")
-        print(url)
-        response = requests.get(url)
+        #url = request.data.decode("utf-8")
+        #print(url)
+        #response = requests.get(url)
 
-        print(response)
+        #print(response)
+        audio = request.files.get("file")
+        #print(audio.filename)
+
+        filename = "recordings/{}".format(secure_filename(audio.filename))
+        audio.save(filename)
+
+        #filename = request.get_json(force=True).get("filename")
+        #print(filename)
+
+        #filename = "recordings/{}".format(secure_filename(filename))
+
+        speech_info = analyze_speech(filename)
+        print(speech_info)
+
+        return speech_info
+
 
     #return send_from_directory("../client/public", "index.html")
 

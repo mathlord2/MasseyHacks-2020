@@ -53,7 +53,7 @@
     });
 
     // appends an audio element to playback and download recording
-    function createAudioElement(blobUrl) {
+    function createAudioElement(blob, blobUrl) {
         audioURL = blobUrl;
         console.log(audioURL);
         const downloadEl = document.createElement('a');
@@ -69,7 +69,22 @@
         audioEl.appendChild(sourceEl);
         document.getElementById("content").appendChild(audioEl);
         document.getElementById("content").appendChild(downloadEl);
-        sendToBackend(Math.floor(Math.random() * (5 - 2)) + 2, 10, Math.floor(Math.random()* (100 - 85)) + 85);
+
+        let form = new FormData();
+        form.append("file", blob, "audio.wav");
+
+        fetch("/upload_url", {
+			method: "POST",
+			body: form
+        }).then(response => response.json())
+        .then(data => {
+            console.log(data);
+            articulationRate = Math.round(data.articulation_rate);
+            duration = Math.round(data.total_duration);
+            pronunciationScore = Math.round(data.pronounciation_score);
+            sendToBackend(articulationRate, duration, pronunciationScore);
+        });
+        //sendToBackend(Math.floor(Math.random() * (5 - 2)) + 2, 10, Math.floor(Math.random()* (100 - 85)) + 85);
     }
 
     function record() {
@@ -89,7 +104,7 @@
                     const blob = new Blob(chunks, { type: 'audio/wav' });
                     console.log(blob);
                     // convert blob to URL so it can be assigned to a audio src attribute
-                    createAudioElement(URL.createObjectURL(blob));
+                    createAudioElement(blob, URL.createObjectURL(blob));
                 }
             };
             // start recording with 10 milliseconds of time between receiving 'ondataavailable' events

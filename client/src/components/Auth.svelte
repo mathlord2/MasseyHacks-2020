@@ -94,6 +94,7 @@
     }
 </script>
 
+<img src="CommuniPractice.png" alt="Logo">
 <div id="firebaseui-auth-container"></div>
 
 <style>
