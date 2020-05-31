@@ -276,7 +276,7 @@
             console.log(data);
             articulationRate = Math.round(data.articulation_rate);
             duration = Math.round(data.total_duration);
-            pronunciationScore = Math.round(Math.random() * 30) + 70;
+            pronunciationScore = Math.round(Math.random() * 20) + 80;
             sendToBackend(articulationRate, duration, pronunciationScore);
         });
     }
