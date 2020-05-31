@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, jsonify, request, render_template, send_from_directory
 from werkzeug.utils import secure_filename
 from speech_analysis import analyze_speech
 import requests
@@ -21,18 +21,25 @@ def test():
 def analyze_from_file():
 
     if request.method == "POST":
-        if request.files:
-            audio = request.files["audioFile"]
-            print(audio.filename)
+        #if request.files:
+            #audio = request.files["audioFile"]
+            #print(audio.filename)
 
-            filename = "backend/recordings/{}".format(secure_filename(audio.filename))
+            #filename = "{}".format(secure_filename(audio.filename))
+            #audio.save(filename)
 
-            audio.save(filename)
+            filename = request.get_json(force=True).get("filename")
+            print(filename)
+
+            filename = "recordings/{}".format(secure_filename(filename))
 
             speech_info = analyze_speech(filename)
+            print(speech_info)
+
+            return speech_info
 
     # return info
-    return send_from_directory("../client/public", "index.html", test=True)
+    #return send_from_directory("../client/public", "index.html")
 
 @app.route("/upload_url", methods=["POST"])
 def analyze_from_url():
@@ -53,7 +60,7 @@ def analyze_from_url():
 
         print(response)
 
-    return send_from_directory("../client/public", "index.html")
+    #return send_from_directory("../client/public", "index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

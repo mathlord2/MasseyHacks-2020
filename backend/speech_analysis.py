@@ -5,7 +5,7 @@ from scipy.stats import ttest_ind
 import numpy as np
 import os
 
-dir = os.path.join(os.getcwd(), "backend")
+dir = os.getcwd()
 
 # print(dir) should print the directory of "backend"
 
@@ -13,6 +13,7 @@ file_praat = os.path.join(dir, "praatfile.praat")
 
 def analyze_speech(wav_filename):
     sound_path = os.path.join(dir, wav_filename)
+    print(dir)
 
     try:
         info = run_file(file_praat, -20, 2, 0.3, "yes", sound_path, dir, 80, 400, 0.01, capture_output=True)[1].split()

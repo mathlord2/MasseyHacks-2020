@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "rollup -c",
+    "autobuild": "rollup -c -w",
     "dev": "rollup -c -w",
     "start": "sirv public"
   },

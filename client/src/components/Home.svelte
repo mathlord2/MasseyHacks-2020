@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { page, loggedIn, currentUser, userEmail, questions } from "../stores.js";
 
+    let filename;
     let recorder;
     let question;
     let time;
@@ -24,14 +25,28 @@
         });
 
         window.$("#signout").on("click", signout);
-        //window.$('.inputFile').change(function(e){
-			//var reader = new FileReader();
-			//let file = window.$('.inputFile').prop('files')[0];
-			//reader.readAsDataURL(file);
-            //reader.onload = function() {
-                //audioURL = reader.result;
-				//filename = e.target.files[0].name;
-            //}
+
+        window.$('.inputFile').change(function(e){
+			var reader = new FileReader();
+			let file = window.$('.inputFile').prop('files')[0];
+			reader.readAsDataURL(file);
+            reader.onload = function() {
+                audioURL = reader.result;
+                filename = e.target.files[0].name;
+                
+                fetch("/upload_file", {
+					method: "POST",
+					body: JSON.stringify({
+						"filename": filename
+					})
+                }).then(response => response.text())
+                .then(data => console.log(data));
+            }
+        });
+        //window.$("#submitting").on("click", function() {
+            //setTimeout(fetch("/upload_file")
+            //.then(response => response.json())
+            //.then(data => console.log(data)), 10000);
         //});
     });
 
@@ -233,7 +248,7 @@
             <p>Or</p>
 
             <iframe name="blank" style="display:none"></iframe>
-            <form action="/upload_file" method="POST" enctype="multipart/form-data" target="blank">
+            <form action="/upload_file" method="POST" enctype="multipart/form-data" target="blank" id="submitting">
                 <input type="file" id="audioFile" class="inputFile" name="audioFile" accept=".wav">
 	            <label for="audioFile">Upload Audio <i class="fa fa-upload"></i></label>
                 <button type="submit">Submit File</button>
